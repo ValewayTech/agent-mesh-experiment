@@ -1,0 +1,7 @@
+adversarial,condition,violations,welfare_loss,reviewer_burden,completed
+False,A,0.25,0.083,1.75,1.0
+False,C,0.0,0.083,1.667,1.0
+False,D,0.0,0.112,1.75,0.917
+True,A,0.25,0.406,1.25,0.5
+True,C,0.0,0.375,1.333,0.667
+True,D,0.0,0.512,1.0,0.5

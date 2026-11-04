@@ -1,0 +1,15 @@
+# Secrets: never commit keys
+.env
+.env.*
+!.env.example
+*.key
+secrets/
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+# Run outputs (commit selected live results deliberately, not by default)
+results/*
+!results/.gitkeep
