@@ -6,7 +6,7 @@ A small, reproducible harness for one question:
 
 > When AI agents acting for **different people** deal with each other, how does a **mandate enforced in code** compare with a **budgeted LLM approver** on mandate violations, welfare loss, reviewer burden, false blocks and task completion? And does a **per-principal outcome monitor** catch collusion that rule checks miss?
 
-**Status (4 November 2026).** Two runs are complete, and a third stage stopped early. The pre-registered main run (`results/live-v1/`) has 50 synthetic scenarios × 4 conditions × 2 seeds = 400 episodes, 0 failed. A pre-registered exploratory addendum, E1 (`results/live-B-unlimited/` and `results/live-B-deny/`, 200 episodes), reran the approver condition without its budget cliff. A pre-registered stage E2 (hybrid condition, user-written mandates, robustness tests) stopped after 45 episodes when API credit ran out. It adds no new comparison; see `results/E2_SUMMARY.md`. The write-up is `writeup/Findings Paper - Safeguards for Agent-to-Agent Negotiation.md`. The results are preliminary. They come from one model family, two seeds and weak attacks, with automatic scoring and 20 transcripts spot-checked by the author. Read the paper's limitations before citing any number.
+**Status (5 November 2026).** Two Phase 1 runs are complete, and a third stage stopped early, then a further addendum completed two of its five stages. The pre-registered main run (`results/live-v1/`) has 50 synthetic scenarios × 4 conditions × 2 seeds = 400 episodes, 0 failed. A pre-registered exploratory addendum, E1 (`results/live-B-unlimited/` and `results/live-B-deny/`, 200 episodes), reran the approver condition without its budget cliff. A pre-registered stage E2 (hybrid condition, user-written mandates, robustness tests) stopped after 45 episodes when API credit ran out; see `results/E2_SUMMARY.md`. A further pre-registered addendum, E2b, completed Stage 1 (255 leftover A/C/D episodes in `results/e2b-main/`) and Stage 2 (100 hybrid E episodes in `results/e2b-E/`). Stages 3 to 5 were not started. See `writeup/E2b Findings Note.md` and `results/E2b_SUMMARY.md`. The Phase 1 write-up is `writeup/Findings Paper - Safeguards for Agent-to-Agent Negotiation.md`. Phase 1 results remain preliminary. E2b Stages 1 and 2 are completed stages of the addendum, not a finished product claim. They come from one model family, two seeds and weak attacks, with automatic scoring. Read the paper's limitations and the E2b note's caveats before citing any number.
 
 **How it was built.** One author designed the study. The harness was built with heavy help from AI coding tools. Everything needed to inspect or rerun it is in this repository.
 
@@ -18,20 +18,20 @@ Picture a **personal agent mesh**: each person, firm and public body has its own
 - **People and businesses:** a table, a trip, or a small firm's procurement agent collecting supplier bids.
 - **People and public services:** a council agent offering bulky-waste collection slots or renewing a parking permit.
 
-None of this is useful unless people can trust their agent without watching every exchange. The working hypothesis is that this needs a **trust layer enforced in code** at each seam between principals:
+None of this is useful unless people can trust their agent without watching every exchange. That needs a **trust layer enforced in code** at each seam between principals:
 - mandates and budgets;
 - signed sign-offs;
 - an audit trail;
 - a per-person outcome check;
 - an LLM reviewer only where code cannot decide.
 
-**The design pattern these preliminary results suggest** (findings paper, section 6):
+**The design pattern this points to** (findings paper, section 6):
 - **decide in code** whatever the mandate states;
 - send only flagged grey cases to a narrow AI reviewer that can block but never widen authority;
 - send anything the mandate does not cover back to the person;
 - confirm the person's plain-English intent before it is enforced.
 
-This repository measures which of those controls hold, and at what cost in human attention, when agents act for different people. The findings paper, section 7, sets out the idea. See `PROVENANCE.md` for how this public copy was prepared.
+This repository measures which of those controls hold, and at what cost in human attention, when agents act for different people. The findings paper, section 7, sets out the idea.
 
 ## Results at a glance (100 episodes per condition)
 
@@ -47,6 +47,7 @@ This repository measures which of those controls hold, and at what cost in human
 - **Fixing the budget did not fix the approver (E1, exploratory).** With an unlimited budget it still let 12 breach episodes through, 11 of them sign-off breaches it approved itself. With deny-by-default it matched C on breaches (1 against 0), but only by blocking most actions (91% of its blocks were false), and it completed 48 tasks against C's 88. Check it with `python scripts/e1_compare.py`.
 - **The attacks were weak.** The H1 result (C beats B) rests mainly on ordinary sign-off lapses, not resistance to attacks.
 - **The outcome monitor was a negative result.** It caught 0 of 10 collusion episodes and held 10 deals that involved no collusion.
+- **E2b Stages 1 and 2 (5 November 2026).** On leftover cells, code hard rules (C, n=85) again had 0 violations against about 20% for no control (A, n=84), with completion 0.812 against 1.0. Hybrid E (n=100, full scenario set) also had 0 violations, but completion was 0.57, welfare loss 0.307, and the false-positive rate about 71%. E versus leftover C is not a matched scenario set. Stages 3 to 5 were not started. See `writeup/E2b Findings Note.md`.
 
 ## What is in here
 
@@ -69,11 +70,13 @@ preregistration.yaml  hypotheses and settings, v1 and v2, the dated amendment no
 results/live-v1/      the main run: config.json, results.csv, tables/, plots/, spotcheck/, transcripts/ (400 JSONL files)
 results/live-B-*/     exploratory addendum E1 (B-unlimited, B-deny; 100 episodes each); summary in results/E1_SUMMARY.md
 results/e2-main/      E2 stage 1, partial (45 episodes; stopped on insufficient API credit); summary in results/E2_SUMMARY.md
+results/e2b-main/     E2b stage 1, leftover A/C/D (255 episodes); summary in results/E2b_SUMMARY.md
+results/e2b-E/        E2b stage 2, hybrid E (100 episodes)
 scenarios_robust/     15 E2 robustness scenarios and generate_robust.py
 results/pilot*/       small development pilots (not results)
 scripts/              verify_b_budget.py, bootstrap_ci.py, e1_compare.py, blocks_by_gate.py, e2_offline_replay.py, compile_mandates.py (E2 stage 3, live), spot_check.py, md2docx.py
 tests/                pytest suite (offline, no API key needed)
-writeup/              findings paper (md and docx)
+writeup/              findings paper (md and docx) and the E2b findings note
 ```
 
 ## Requirements
@@ -109,7 +112,7 @@ Each `results/live-v1/transcripts/<scenario>__<condition>__s<seed>.jsonl` file i
 python -m meshexp run --dry-run --seeds 3 --out results/mock
 ```
 
-Scripted fake agents stand in for the models. The output shows that the pipeline runs end to end, and every output is labelled MOCK. Mock numbers are not evidence for anything.
+Scripted fake agents stand in for the models. The output proves that the pipeline works, and every output is labelled MOCK. Mock numbers are not evidence for anything.
 
 ## 3. Reproduce the live run (billable)
 

@@ -1,0 +1,2 @@
+condition,violations,welfare_loss,victim_welfare_loss,reviewer_burden,approvals,escalations,false_positives,interventions,completed,fp_rate,episodes,violation_rate,violations_sem,reviewer_burden_sem,welfare_loss_sem
+E,0.0,0.307,0.309,2.51,1.45,1.06,0.64,0.9,0.57,0.711,100,0.0,0.0,0.15,0.024
