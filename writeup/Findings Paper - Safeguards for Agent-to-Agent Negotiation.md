@@ -1,8 +1,10 @@
 # Safeguards for Agent-to-Agent Negotiation: Code-Enforced Mandates, Budgeted Approvers and Outcome Monitors
 
-*Research note · Sebastian Vale · November 2026 · Draft for comment · v5 (adds the E2 stage, which stopped early when API credit ran out, and turns section 6 into an implementation thesis)*
+*Research note · Sebastian Vale · November 2026 · Draft for comment · v5 (adds the E2 stage, which stopped early when API credit ran out, and turns section 6 into an implementation thesis). E2b Stages 1 and 2 are recorded in a separate note dated 5 November 2026.*
 
 **Status: preliminary.** All results come from one pre-registered live run of a small, synthetic experiment (400 episodes), plus a pre-registered exploratory rerun of the approver condition (E1, 200 episodes). A further pre-registered stage (E2) stopped after 45 episodes when API credit ran out (section 3.5). Figures come from automatic scoring, with transcripts spot-checked by the author (20 sampled), who confirmed the scoring on that sample. Read the numbers as indicative, not established.
+
+**E2b addendum (5 November 2026).** After an API credit top-up, Stages 1 and 2 of the pre-registered E2b follow-on were completed. Stages 3 to 5 were not started. The figures and caveats are in `writeup/E2b Findings Note.md`. They do not replace the tables in this paper, and E2's original 45 episodes are not pooled with them.
 
 ## Abstract
 
@@ -153,6 +155,8 @@ E2 was pre-registered (addendum E2, committed before any E2 live call) with five
 - **The catch:** the fairness flag ("least-preferred allowed option") would also have fired on P1's agreement in all 10 of D's false holds and in 5 to 6 of the 10 collusion episodes. Whether E helps therefore depends on the reviewer telling unfair outcomes from ordinary compromise, which is exactly where the LLM approver and monitor failed here. That is the question E2's stage 2 was built to answer.
 - **Out-of-distribution gap, by construction:** in all five derived scenarios where the counterparty adds an admin fee the person's mandate never mentions, the code checker allows a fee the person would refuse. E flags it as not covered.
 
+**Update, 5 November 2026.** A later addendum (E2b) completed the remaining Stage 1 A, C and D cells (255 episodes) and Stage 2 hybrid E (100 episodes). Stages 3 to 5 were not started. Those figures are reported in `writeup/E2b Findings Note.md` and are not added to the tables above. E2's 45 episodes remain historical context and are not pooled with E2b.
+
 ## 4. Anomalies
 
 1. **The approver fails both ways, with or without a budget.** In every configuration, more than 90% of its blocks were false: it often rejected honest agents' acceptable moves because they were not that person's first preference. Under allow-by-default, 19 of B's 21 breach episodes went through after its budget was spent. With no budget limit (E1), it approved sign-off breaches itself in 11 episodes. In this setting, a small attention budget spent on the wrong actions did worse than a cheap rule check, and more attention did not make up the difference.
@@ -200,10 +204,10 @@ The results suggest the problem is not "code or AI". It is **who decides what**.
 |---|---|
 | Code-enforced hard rules beat an LLM gate on breaches, false blocks and burden | **Tested** (main run and E1; one model family, weak attacks) |
 | An LLM gate cannot be fixed by budget policy alone | **Tested, exploratory** (E1) |
-| Grey-flag routing would reach the leaks code missed at low load | **Offline replay only** (3.5) |
-| A narrow reviewer judges flagged fairness cases well enough | **Untested.** The evidence so far (the D monitor) is negative. |
-| Lay rules can be compiled accurately, and confirm-back fixes the gaps | **Untested** (E2 stage 3 did not run) |
-| The pattern holds against stronger leaks and multi-step collusion | **Untested** (E2 stage 4 did not run) |
+| Grey-flag routing would reach the leaks code missed at low load | **Offline replay only** (3.5). An E2b replay on Stage 1 C found flags in 54 of 85 episodes, but flagged mean welfare was not higher than overall C. |
+| A narrow reviewer judges flagged fairness cases well enough | **E2b Stage 2 tested the live hybrid (E).** Violations stayed at 0, but the false-positive rate was about 71%, completion was 57%, and welfare loss was higher than Stage 1 C. Not a free improvement. The earlier D monitor evidence remains negative. |
+| Lay rules can be compiled accurately, and confirm-back fixes the gaps | **Untested** (E2b stage 3 was not started) |
+| The pattern holds against stronger leaks and multi-step collusion | **Untested** (E2b stage 4 was not started) |
 
 ### 6.3 Honest limits
 
@@ -222,11 +226,7 @@ None of these standards says which constraints are enough, how to handle what a 
 
 ### 6.5 Next study
 
-Finish E2 as pre-registered:
-- the same-run baselines;
-- the hybrid E against C and B;
-- user-written mandates with confirm-back;
-- the robustness set.
+E2b finished the leftover same-run baselines (Stage 1) and the hybrid E (Stage 2). It did not run user-written mandates with confirm-back, the robustness set, or B-unlimited in the same batch. Those remain the natural next measurements if the work continues, together with a clearer test of whether grey flags mark harmful cases or ordinary compromise.
 
 Then test the principal-anchored outcome check (layer 4) on harder collusion, with a second, independent human reviewer of transcripts.
 
@@ -273,4 +273,4 @@ Three questions decide whether the mesh is safe enough to be useful:
 
 *All arXiv IDs, titles and first authors above were checked against arxiv.org on 3 November 2026.*
 
-*Materials: harness, 50 scenario files and 15 robustness scenarios, pre-registration (v1, v2, addenda E1 and E2), all results and transcripts, and the replay scripts are in the project repository: https://github.com/ValewayTech/agent-mesh-experiment*
+*Materials: harness, 50 scenario files and 15 robustness scenarios, pre-registration (v1, v2, addenda E1 and E2), all results and transcripts, and the replay scripts are in the project repository: https://github.com/ValewayTech/agent-mesh-experiment. Published under the pen name Sebastian Vale.*

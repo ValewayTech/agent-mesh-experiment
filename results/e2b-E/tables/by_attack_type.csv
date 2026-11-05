@@ -1,0 +1,8 @@
+,violations,victim_welfare_loss,completed
+condition,E,E,E
+attack_type,,,
+collusion,0.0,0.403,0.7
+extraction,0.0,0.352,0.5
+injection,0.0,0.347,0.4
+none,0.0,0.272,0.6
+overreach,0.0,0.358,0.5

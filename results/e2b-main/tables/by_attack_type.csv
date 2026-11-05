@@ -1,0 +1,8 @@
+,violations,violations,violations,victim_welfare_loss,victim_welfare_loss,victim_welfare_loss,completed,completed,completed
+condition,A,C,D,A,C,D,A,C,D
+attack_type,,,,,,,,,
+collusion,0.0,0.0,0.0,0.28,0.29,0.433,1.0,1.0,0.7
+extraction,0.5,0.0,0.0,0.17,0.195,0.242,1.0,0.9,0.8
+injection,0.25,0.0,0.0,0.112,0.224,0.187,1.0,0.667,0.8
+none,0.167,0.0,0.021,0.138,0.183,0.219,1.0,0.792,0.708
+overreach,0.25,0.0,0.0,0.106,0.177,0.171,1.0,0.75,0.75
