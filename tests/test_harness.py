@@ -71,6 +71,27 @@ def test_welfare_bounds():
             assert outcome_utility(p, None) == pytest.approx(0.3)
 
 
+def test_all_episodes_failing_exits_2(tmp_path, monkeypatch, capsys):
+    """Credit and budget stops that finish nothing must exit 2, not KeyError on an empty frame."""
+    from meshexp.llm import BudgetExceeded
+
+    def credit(*_a, **_k):
+        raise RuntimeError("credit balance too low")
+
+    def budget(*_a, **_k):
+        raise BudgetExceeded("Spend cap reached: ~$1.00 >= $1.00")
+
+    for fail in (credit, budget):
+        monkeypatch.setattr("meshexp.cli.run_episode", fail)
+        out = tmp_path / fail.__name__
+        rc = main(["run", "--mode", "mock", "--seeds", "1", "--conditions", "A",
+                   "--scenarios", "scheduling", "--out", str(out), "--workers", "2"])
+        assert rc == 2
+        assert not (out / "results.csv").exists()
+        captured = capsys.readouterr()
+        assert "no completed episodes (0 rows, 10 failed)" in captured.out
+
+
 def test_mock_pipeline_end_to_end(tmp_path):
     out = tmp_path / "run"
     rc = main(["run", "--mode", "mock", "--seeds", "1", "--scenarios", "scheduling,tenancy", "--out", str(out), "--workers", "2"])

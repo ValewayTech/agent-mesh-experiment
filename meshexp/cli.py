@@ -78,6 +78,10 @@ def cmd_run(a) -> int:
                     print("STOP: credit/billing error; cancelling remaining episodes"); [g.cancel() for g in futs]
             if i % 50 == 0 or i == len(jobs):
                 print(f"  {i}/{len(jobs)} done" + (f", ~${tracker.spent_usd:.2f} spent" if a.mode == "live" else ""))
+    if not rows:
+        # Nothing completed: an empty frame has no columns, so sorting would raise KeyError.
+        print(f"no completed episodes (0 rows, {failed} failed)")
+        return 2
     df = pd.DataFrame(rows).sort_values(["scenario", "condition", "seed"])
     df.drop(columns=["final_terms"]).assign(violation_ids=df["violation_ids"].map(";".join)).to_csv(out / "results.csv", index=False)
     print(f"wrote {out / 'results.csv'} ({len(df)} rows, {failed} failed)")
